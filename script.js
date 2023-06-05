@@ -1,6 +1,7 @@
 const container = document.querySelector('.container');
 const count = document.getElementById('count');
 const select = document.getElementById('movie');
+const seats = document.querySelectorAll('.seat:not(.reserved)');
 
 container.addEventListener('click', function(e) {
     if(e.target.classList.contains('seat') && !e.target.classList.contains('reserved')) {
@@ -15,8 +16,30 @@ select.addEventListener('change', function(e) {
 });
 
 function calculateTotal() {
-    let selectedSeatCount = container.querySelectorAll('.seat.selected').length-1;
-    let price = select.value;
+    const selectedSeats = container.querySelectorAll('.seat.selected');
+    const selectedSeatsArr = [];
+    const seatsArr = [];
+    selectedSeats.forEach(function(seat) {
+        selectedSeatsArr.push(seat);
+    });
+    
+    seats.forEach(function(seat) {
+        seatsArr.push(seat);
+    });
+
+    let selectedSeatsIndex = selectedSeatsArr.map(function(seat) {
+        return seatsArr.indexOf(seat);
+    });
+
+    let selectedSeatCount =selectedSeats.length-1;
     count.innerText = selectedSeatCount;
-    amount.innerText = price*(selectedSeatCount);
+    amount.innerText = select.value*selectedSeatCount;
+
+    saveToLocalStorage(selectedSeatsIndex);
+}
+
+function saveToLocalStorage(index) {
+    localStorage.setItem('selectedSeats', JSON.stringify(index));
+    localStorage.setItem('selectedMovieIndex', select.selectedIndex);
+    localStorage.setItem('selectedMoviePrice', select.value);
 }
