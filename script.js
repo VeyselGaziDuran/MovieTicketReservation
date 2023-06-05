@@ -3,6 +3,9 @@ const count = document.getElementById('count');
 const select = document.getElementById('movie');
 const seats = document.querySelectorAll('.seat:not(.reserved)');
 
+getForumLocalStorage();
+calculateTotal();
+
 container.addEventListener('click', function(e) {
     if(e.target.classList.contains('seat') && !e.target.classList.contains('reserved')) {
         e.target.classList.toggle('selected');
@@ -37,6 +40,26 @@ function calculateTotal() {
 
     saveToLocalStorage(selectedSeatsIndex);
 }
+
+function getForumLocalStorage() {
+    const selectedSeats = JSON.parse(localStorage.getItem('selectedSeats'));
+
+    if(selectedSeats !== null && selectedSeats.length > 0) {
+        seats.forEach(function(seat, index) {
+            if(selectedSeats.indexOf(index) > -1) {
+                seat.classList.add('selected');
+            }
+        });
+    }
+
+    const selectedMovieIndex = localStorage.getItem('selectedMovieIndex');
+    const selectedMoviePrice = localStorage.getItem('selectedMoviePrice');
+
+    if(selectedMovieIndex !== null) {
+        select.selectedIndex = selectedMovieIndex;
+    }
+}
+
 
 function saveToLocalStorage(index) {
     localStorage.setItem('selectedSeats', JSON.stringify(index));
